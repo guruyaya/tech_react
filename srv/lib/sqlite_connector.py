@@ -1,7 +1,8 @@
 import sqlite3
 
 class LiteCon():
-    def __new__(cls, filename=None):
+    @classmethod
+    def getInstance(cls, filename=None):
         if not hasattr(cls, 'instance'):
             if filename is None:
                 raise Exception('Filename is required')
@@ -10,7 +11,7 @@ class LiteCon():
         return cls.instance
     
     def __init__(self, filename):
-        self.con = sqlite3.connect(filename)
+        self.con = sqlite3.connect(filename, check_same_thread=False)
         self.cur = self.con.cursor()
 
 

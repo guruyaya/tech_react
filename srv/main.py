@@ -1,23 +1,21 @@
-import os
 from typing import Annotated
 from contextlib import asynccontextmanager
 
-from lib.sqlite_connector import LiteCon
 from fastapi import FastAPI, Depends, Response
 from lib.login_cookie import cookieChecker
+from lib.startup import db_startup
 from fastapi.security import OAuth2PasswordRequestForm
+
+from app.todo.urls import router as todo_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    if not os.path.isdir(f"{base_dir}/db"):
-        os.mkdir(f"{base_dir}/db")
-    
+    conn = db_startup()
+
     # Load the ML model
-    conn = LiteCon(f"{base_dir}/db/db.db")
     conn.cur.execute("""CREATE TABLE IF NOT EXISTS todo 
                      (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                     name TEXT description TEXT)""")
+                     name TEXT, description TEXT)""")
     conn.cur.execute("""CREATE TABLE IF NOT EXISTS todo_item 
                      (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                      todo_id INTEGER,
@@ -37,6 +35,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.include_router(todo_router)
+
 @app.get("/")
 def read_root(user: dict[str, bool]=Depends(cookieChecker.check_login_cookie)):   
     return {"Hello": "World"}
@@ -55,4 +55,4 @@ def logout(response: Response, user: dict[str, bool]=Depends(cookieChecker.check
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, workers=1)
