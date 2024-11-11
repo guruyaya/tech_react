@@ -1,3 +1,5 @@
 .venv
 .mypy_cache
 .vite
+db
+**/__pycache__
