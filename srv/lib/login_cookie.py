@@ -30,7 +30,7 @@ class LoginCookie:
         response.set_cookie(key="MyInsecureCookie", value="NotASecret") # this line is designed to show how to extract cookie via JS
 
 
-    def check_login_cookie(self, request: Request) -> dict[str, bool]:
+    def check_login_cookie(self, request: Request) -> dict[str, str]:
         cookie_value = request.cookies.get(self.cookie_name)
         if not cookie_value:
             raise HTTPException(status_code=401, detail="Login cookie missing")
@@ -42,6 +42,6 @@ class LoginCookie:
         new_hashed = hashlib.sha256(unhashed.encode()).hexdigest()
         if hashed != new_hashed:
             raise HTTPException(status_code=401, detail="Login cookie tampered")
-        return {"login": True}
+        return {"username": "Not Secure"}
 
 cookieChecker = LoginCookie(secret_key="secret_key", timeout=3600, cookie_name="login")

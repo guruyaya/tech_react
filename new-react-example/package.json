@@ -12,6 +12,8 @@
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "react-use-signal": "^1.0.14",
     "vite-plugin-replace": "github:guruyaya/vite5-plugin-replace"
   },
   "devDependencies": {
@@ -24,6 +26,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
+    "sass-embedded": "^1.80.6",
     "vite": "^5.4.10"
   }
 }

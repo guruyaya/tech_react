@@ -37,9 +37,9 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(todo_router)
 
-@app.get("/")
+@app.get("/me")
 def read_root(user: dict[str, bool]=Depends(cookieChecker.check_login_cookie)):   
-    return {"Hello": "World"}
+    return user
 
 @app.post("/login")
 def login(login: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response):

@@ -1,0 +1,25 @@
+#root {
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 0 30px;
+  &>h1 {
+    background-color: #99FFFF;
+    margin: 0;
+    height: 60px;
+  }
+  background-color: #F9F;
+}
+
+main {
+  max-width: 1200px;
+  width: 90%;
+  margin: auto;
+  background-color: white;
+  min-height: calc(100vh - 90px);
+  h2 {
+    text-align: center;
+    background-color: #F9F;
+    margin: 0;
+  }
+}
+
