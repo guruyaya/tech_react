@@ -31,7 +31,7 @@ class TodoItem(TodoItemInput):
 
     @staticmethod
     def from_db_row(tup:tuple):
-        return TodoItem(id=tup[0], todo_id=tup[1], name=tup[2], description=tup[3], status=tup[4])
+        return TodoItem(id=tup[0], todo_id=tup[1], name=tup[2], description=tup[3], status=tup[4] or False)
         
     @staticmethod
     def from_fetchall(conn: LiteCon) -> list[Todo]: 

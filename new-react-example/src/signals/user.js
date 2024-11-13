@@ -2,6 +2,7 @@ import { createSignal } from 'react-use-signals';
 import raiseError from './error';
 
 import httpClient from '../lib/http_client';
+
 const userSignal = createSignal(null);
 
 export function checkLogin() {

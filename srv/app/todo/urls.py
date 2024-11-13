@@ -12,7 +12,7 @@ def list_todos() -> list[Todo]:
     return Todo.from_fetchall(conn)
 
 @router.post('/')
-def create_todo(todo: TodoInput) -> Todo:
+def create_todo(todo: TodoInput) -> FullTodo:
     conn = LiteCon.getInstance()
     conn.cur.execute('INSERT INTO todo (name, description) VALUES (?, ?)', (todo.name, todo.description))
     conn.con.commit()
@@ -27,6 +27,13 @@ def get_todo(todo_id: int) -> FullTodo:
     items = TodoItem.from_fetchall(conn)
 
     return FullTodo(id=todo.id, name=todo.name, description=todo.description, items=items)
+
+@router.put('/{todo_id}')
+def update_todo(todo_id: int, todo: TodoInput) -> Todo:
+    conn = LiteCon.getInstance()
+    conn.cur.execute('UPDATE todo SET name=?, description=? WHERE id=?', (todo.name, todo.description, todo_id))
+    conn.con.commit()
+    return get_todo(todo_id)
 
 @router.post('/{todo_id}')
 def new_todo_item(todo_id: int, item: TodoItemInput) -> TodoItem:
