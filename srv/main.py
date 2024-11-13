@@ -1,11 +1,12 @@
 from typing import Annotated
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, Depends, Response
+from fastapi import FastAPI, Depends, Response, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+
 from lib.login_cookie import cookieChecker
 from lib.startup import db_startup
-from fastapi.security import OAuth2PasswordRequestForm
-
 from app.todo.urls import router as todo_router
 
 @asynccontextmanager
@@ -35,6 +36,17 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:8000", "http://127.0.0.1:5173", "http://127.0.0.1:5174",
+        "http://localhost:8000", "http://localhost:5173", "http://localhost:5174",
+        "https://polywow.ai"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(todo_router)
 
 @app.get("/me")
@@ -45,8 +57,8 @@ def read_root(user: dict[str, bool]=Depends(cookieChecker.check_login_cookie)):
 def login(login: Annotated[OAuth2PasswordRequestForm, Depends()], response: Response):
     if login.username == "not_secure" and login.password == "not_secure":
         cookieChecker.set_login_cookie(response=response)
-        return {"message": "Login successful"}
-    return {"message": "Login failed"}
+        return {"logged_in": True, "username": "Not Secure"}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
 
 @app.post("/logout")
 def logout(response: Response, user: dict[str, bool]=Depends(cookieChecker.check_login_cookie)):

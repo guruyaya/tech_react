@@ -1,22 +1,35 @@
 import './App.scss'
-import {BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom'
+import Router from './router'
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorPage, Wait } from './components'
+import userSignal, {checkLogin} from './signals/user';
+import { useEffect } from 'react';
+import { errorSignal } from './signals/error';
+import Login from './login'
+// The files created by vite have a first capital letter. This is not a good practice, as it may cause windows / linux differences. 
+// Use only lowercase letters and numbers in file names other than those created by vite.
 
 function App() {
+  const user = userSignal.useStateAdapter()
+  const error = errorSignal.useStateAdapter()
+
+  useEffect(() => {
+    checkLogin()
+  }, [])
+
+  useEffect(() => {
+      console.error(error.value)
+  }, [error.value])
 
   return (
-      <Router>
-        <h1>
-          <Link to="/">TODO App</Link>
-        </h1>
-        <main>
-        <Routes>
-          <Route path="/" element={<h2>Home</h2>} />
-          <Route path="/:todo_id" element={<h2>TODO</h2>} />
-          <Route path="/:todo_id/:item_id" element={<h2>Item</h2>} />
-        </Routes>
-        </main>
-      </Router>
+    <ErrorBoundary FallbackComponent={ErrorPage}>{
+      (error.value) ? <ErrorPage /> : 
+        (user.value === null) ? <Wait /> : 
+          (user.value.logged_in) ? <Router /> :
+        <Login />
+    }</ErrorBoundary>
   )
 }
+
 
 export default App
