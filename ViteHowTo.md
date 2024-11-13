@@ -10,10 +10,16 @@ Used to set a value on development - I use to to replace the local config file w
 - npm install vite-plugin-static-copy
 Used to create copy files on npm build into the static folder of my FastAPI / Django project.
 
-## React only:
 - npm install react-error-boundary
 Used to catch errors - note that async errors are not  caught by this library.
 
+-  npm install sass
+Used to provide sass support.
+
+-  npm install axios
+Used to provide sass support.
+
+## React only:
 - npm install react-use-signals
 Used to provide signals to react components.
 
@@ -21,3 +27,5 @@ Used to provide signals to react components.
 Used for routing.
 
 ## Preact only:
+- npm install @preact/signals
+Handling signals in preact
